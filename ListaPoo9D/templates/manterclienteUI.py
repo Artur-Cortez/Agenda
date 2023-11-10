@@ -18,26 +18,28 @@ class ManterClienteUI:
       st.write("Nenhum cliente cadastrado")
     else:
       dic = []
-      for obj in clientes: dic.append(obj.__dict__)
-      df = pd.DataFrame(dic)
+      for obj in clientes: 
+        id = obj.get_id()
+        nome = obj.get_nome()
+        email = obj.get_email()
+        fone = obj.get_fone()
+        senha = obj.get_senha()
+        dic.append([id, nome, email, fone, senha])
+      df = pd.DataFrame(dic, columns=["ID", "Nome", "Email", "Fone", "Senha"])
       st.dataframe(df)
 
   def inserir():
-    aux = False
     nome = st.text_input("Informe o nome")
     email = st.text_input("Informe o e-mail")
-    listar = View.cliente_listar()
-    for i in listar:
-      if i.get_email() == email:
-        st.write("Email já existente. Favor trocar")
-      
     fone = st.text_input("Informe o fone")
     senha = st.text_input("Informe a senha")
-    if st.button("Inserir") and aux:
-      View.cliente_inserir(nome, email, fone, senha)
-      st.success("Cliente inserido com sucesso")
-      time.sleep(2)
-      st.rerun()
+    if st.button("Inserir"):
+      if not View.cliente_inserir(nome, email, fone, senha):
+        st.error("Já existe outro cliente com esse mesmo e-mail")
+      else:
+        st.success("Cliente inserido com sucesso")
+        time.sleep(2)
+        st.rerun()
 
   def atualizar():
     clientes = View.cliente_listar()
@@ -51,10 +53,12 @@ class ManterClienteUI:
       senha = st.text_input("Informe a nova senha", op.get_senha())
       if st.button("Atualizar"):
         id = op.get_id()
-        View.cliente_atualizar(id, nome, email, fone, senha)
-        st.success("Cliente atualizado com sucesso")
-        time.sleep(2)
-        st.rerun()
+        if not View.cliente_atualizar(id, nome, email, fone):
+          st.error("Já existe outro cliente com esse mesmo e-mail")
+        else:
+          st.success("Cliente atualizado com sucesso")
+          time.sleep(2)
+          st.rerun()
 
   def excluir():
     clientes = View.cliente_listar()

@@ -34,8 +34,8 @@ class Agenda:
       'id': self.__id,
       'data': self.__data.strftime('%d/%m/%Y %H:%M'),
       'confirmado': self.__confirmado,
-      'Nome_cliente': self.__id_cliente,
-      'Nome_servico': self.__id_servico}
+      'id_cliente': self.__id_cliente,
+      'id_servico': self.__id_servico}
 
 
 class NAgenda:
@@ -103,7 +103,7 @@ class NAgenda:
           aux = Agenda(
             obj["id"],
             datetime.datetime.strptime(obj["data"], "%d/%m/%Y %H:%M"),
-            obj["confirmado"], obj["Nome_cliente"], obj["Nome_servico"])
+            obj["confirmado"], obj["id_cliente"], obj["id_servico"])
           cls.__agendas.append(aux)
     except FileNotFoundError:
       pass

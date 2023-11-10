@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from equacao import Equacao
+from ListaPoo9.equacao import Equacao
 
 class EquacaoUI:
     def main():
@@ -12,13 +12,13 @@ class EquacaoUI:
             eq = Equacao(a, b, c)
             st.write(eq)
             st.write(f"Delta = {eq.delta()}")
-            if eq.tem_raizes_reais():
-                st.write(f"x1 = {eq.x1()}")
-                st.write(f"x2 = {eq.x2()}")
-                d = abs(eq.x1()-eq.x2())
+            if eq.TemRaizesReais():
+                st.write(f"x1 = {eq.Raiz1()}")
+                st.write(f"x2 = {eq.Raiz2()}")
+                d = abs(eq.Raiz1()-eq.Raiz2())
                 if d == 0: d = 4
-                xmin = eq.x2() - d/2
-                xmax = eq.x1() + d/2
+                xmin = eq.Raiz2() - d/2
+                xmax = eq.Raiz1() + d/2
             else:
                 st.write("Não tem raízes reais")   
                 xmin = -10
@@ -27,13 +27,9 @@ class EquacaoUI:
             py = []
             x = xmin
             while x < xmax * 1.005:
-            #for x in range(-10, 11):
                 px.append(x)
                 py.append(eq.y(x))
                 x += (xmax - xmin) / 50
-            st.write(px)
-            st.write(py)
             dic = { "x" : px, "y" : py }
             chart_data = pd.DataFrame(dic)
             st.line_chart(chart_data, x = "x", y = "y")    
-
