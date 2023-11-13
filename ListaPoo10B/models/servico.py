@@ -1,13 +1,13 @@
 import json
-
+from streamlit import write
 class Servico:
   def __init__(self, id, descricao, valor, duracao):
+    if valor < 0: raise ValueError("Valor inválido")
+    if duracao <= 0: raise ValueError("Duração inválida")
     self.__id = id
     self.__descricao = descricao
     self.__valor = valor
     self.__duracao = duracao
-    if valor < 0: raise ValueError("Valor não pode ser negativo")
-    if duracao < 0: raise ValueError("Duração não pode ser negativa")
 
   def get_id(self): return self.__id
   def get_descricao(self): return self.__descricao
@@ -16,12 +16,12 @@ class Servico:
 
   def set_id(self, id): self.__id = id
   def set_descricao(self, descricao): self.__descricao = descricao
-  def set_valor(self, valor):
-     self.__valor = valor
-     if valor < 0: raise ValueError("Valor não pode ser negativo")
-  def set_duracao(self, duracao): 
+  def set_valor(self, valor): 
+    if valor < 0: raise ValueError("Valor inválido")
+    self.__valor = valor
+  def set_duracao(self, duracao):
+    if duracao <= 0: raise ValueError("Duração inválida")
     self.__duracao = duracao
-    if duracao < 0: raise ValueError("Duração não pode ser negativa")
 
   def __eq__(self, x):
     if self.__id == x.__id and self.__descricao == x.__descricao and self.__valor == x.__valor and self.__duracao == x.__duracao:
@@ -29,7 +29,7 @@ class Servico:
     return False
 
   def __str__(self):
-    return f"{self.__id} - {self.__descricao} - {self.__valor:.2f} - {self.__duracao} min"
+    return f"{self.__id} - {self.__descricao} - R$ {self.__valor:.2f} - {self.__duracao} min"
 
 
 class NServico:
@@ -79,15 +79,15 @@ class NServico:
   def abrir(cls):
     cls.__servicos = []
     try:
-      with open("Agenda\ListaPoo9D\models\servicos.json", mode="r") as arquivo:
+      with open("Agenda/ListaPoo10B/models/servicos.json", mode="r") as arquivo:
         servicos_json = json.load(arquivo)
         for obj in servicos_json:
           aux = Servico(obj["_Servico__id"], obj["_Servico__descricao"], obj["_Servico__valor"], obj["_Servico__duracao"])
           cls.__servicos.append(aux)
-    except FileNotFoundError:
-      pass
+    except FileNotFoundError as f:
+      write(f)
 
   @classmethod
   def salvar(cls):
-    with open("Agenda\ListaPoo9D\models\servicos.json", mode="w") as arquivo:
+    with open("Agenda/ListaPoo10B/models/servicos.json", mode="w") as arquivo:
       json.dump(cls.__servicos, arquivo, default=vars)

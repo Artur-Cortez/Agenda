@@ -102,7 +102,7 @@ class NCliente:
     def abrir(cls):
         try:
             cls.__clientes = []
-            with open("PEOOStreamlit\ListaPoo9D\models\clientes.json", "r") as f:
+            with open("Agenda\ListaPoo9D\models\clientes.json", "r") as f:
                 clientes_json = json.load(f)
                 for obj in clientes_json:
                     c = Cliente(obj["_Cliente__id"], obj["_Cliente__nome"], obj["_Cliente__email"], obj["_Cliente__fone"], obj["_Cliente__senha"])
@@ -112,5 +112,5 @@ class NCliente:
 
     @classmethod
     def salvar(cls):
-        with open('PEOOStreamlit\ListaPoo9D\models\clientes.json', 'w') as f:
+        with open('Agenda\ListaPoo9D\models\clientes.json', 'w') as f:
             json.dump(cls.__clientes, f, default=vars)

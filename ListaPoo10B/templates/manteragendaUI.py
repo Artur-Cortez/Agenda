@@ -24,18 +24,21 @@ class ManterAgendaUI:
       st.dataframe(df)
 
   def inserir():
-    datastr = st.text_input("Informe a data no formato *dd/mm/aaaa HH:MM*")
+
+    datastr = st.text_input("Informe a data no formato *dd/mm/aaaa HH\:MM*")
     clientes = View.cliente_listar()
     cliente = st.selectbox("Selecione o cliente", clientes)
     servicos = View.servico_listar()
     servico = st.selectbox("Selecione o serviço", servicos)
     if st.button("Inserir"):
-      data = datetime.datetime.strptime(datastr, "%d/%m/%Y %H:%M")
-      if data < datetime.datetime.now(): raise ValueError("Não posso viajar no tempo bb, ajeite a data") 
-      View.agenda_inserir(data, True, cliente.get_nome(), servico.get_descricao())
-      st.success("Horário inserido com sucesso")
-      time.sleep(2)
-      st.rerun()
+      try:
+        data = datetime.datetime.strptime(datastr, "%d/%m/%Y %H:%M")
+        View.agenda_inserir(data, True, cliente.get_id(), servico.get_id())
+        st.success("Horário inserido com sucesso")
+        time.sleep(0.5)
+        st.rerun()
+      except ValueError as error:
+        st.write(f"Erro: {error}")
 
   def atualizar():
     agendas = View.agenda_listar()
@@ -45,23 +48,26 @@ class ManterAgendaUI:
       op = st.selectbox("Atualização de horários", agendas)
       datastr = st.text_input("Informe a nova data no formato *dd/mm/aaaa HH\:MM*", op.get_data().strftime('%d/%m/%Y %H:%M'))
       clientes = View.cliente_listar()
-      cliente_atual = View.cliente_listar_id(op.get_nome_cliente())
+      cliente_atual = View.cliente_listar_id(op.get_id_cliente())
       if cliente_atual is not None:
         cliente = st.selectbox("Selecione o novo cliente", clientes, clientes.index(cliente_atual))
       else:  
         cliente = st.selectbox("Selecione o novo cliente", clientes)
       servicos = View.servico_listar()
-      servico_atual = View.servico_listar_id(op.get_descricao_servico())
+      servico_atual = View.servico_listar_id(op.get_id_servico())
       if servico_atual is not None:
         servico = st.selectbox("Selecione o novo serviço", servicos, servicos.index(servico_atual))
       else:
         servico = st.selectbox("Selecione o novo serviço", servicos)
       if st.button("Atualizar"):
-        data = datetime.datetime.strptime(datastr, "%d/%m/%Y %H:%M")
-        View.agenda_atualizar(op.get_id(), data, op.get_confirmado(), cliente.get_nome(), servico.get_descricao())
-        st.success("Horário atualizado com sucesso")
-        time.sleep(2)
-        st.rerun()
+        try:
+          data = datetime.datetime.strptime(datastr, "%d/%m/%Y %H:%M")
+          View.agenda_atualizar(op.get_id(), data, op.get_confirmado(), cliente.get_id(), servico.get_id())
+          st.success("Horário atualizado com sucesso")
+          time.sleep(0.5)
+          st.rerun()
+        except ValueError as error:
+          st.write(f"Erro: {error}")
 
   def excluir():
     agendas = View.agenda_listar()
@@ -72,5 +78,7 @@ class ManterAgendaUI:
       if st.button("Excluir"):
         View.agenda_excluir(op.get_id())
         st.success("Horário excluído com sucesso")
-        time.sleep(2)
+        time.sleep(0.5)
         st.rerun()
+
+
