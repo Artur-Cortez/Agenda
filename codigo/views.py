@@ -83,24 +83,6 @@ class View:
     for servico in View.servico_listar():    
       NServico.atualizar(Servico(servico.get_id(), servico.get_descricao(), servico.get_valor() * (1 + percentual/100), servico.get_duracao()))
 
-  def agenda_listar():
-    return NAgenda.listar()
-
-  def agenda_listarsemana():
-    r = []
-    hoje = datetime.datetime.today()
-    delta = datetime.timedelta(days=7)
-    for horario in View.agenda_listar():
-      if horario.get_confirmado() == False and horario.get_data().date() < hoje.date() + delta and horario.get_id_cliente() == 0 and horario.get_id_servico() == 0:
-        r.append(horario)
-    return r
-
-  def meus_agendamentos():
-    l = []
-    for horario in View.agenda_listar():
-      if horario.get_id_cliente() == st.session_state["cliente_id"]:
-        l.append(horario)
-    return l
 
   def agenda_inserir(data, confirmado, id_cliente, id_servico):
     if data < datetime.datetime.now(): raise ValueError("Data inválida ou no passado")
@@ -139,3 +121,43 @@ class View:
       NAgenda.inserir(Agenda(0, aux, False, 0, 0))
       aux = aux + delta
   
+  def agenda_listar():
+    return NAgenda.listar()
+
+  def agenda_listarsemana():
+    r = []
+    hoje = datetime.datetime.today()
+    delta = datetime.timedelta(days=7)
+    for horario in View.agenda_listar():
+      if horario.get_confirmado() == False and horario.get_data().date() < hoje.date() + delta and horario.get_id_cliente() == 0 and horario.get_id_servico() == 0:
+        r.append(horario)
+    return r
+
+  def periodo_informado(datainicial, datafinal, idcliente):
+    datainicial = datetime.strptime(f"{datainicial}", "%d/%m/%Y")
+    datafinal = datetime.strptime(f"{datafinal}", "%d/%m/%Y")
+    
+    periodo = []
+    
+    for horario in View.agenda_listar():
+        if horario.get_id_cliente() == idcliente:
+            if datainicial <= horario.get_data() <= datafinal:
+                periodo.append(horario)
+    
+    return periodo
+  
+  def listar_naoconfirmados():
+    nao_confirmados = []
+    for agenda in View.agenda_listar():
+      if agenda.get_confirmado() == False:
+        nao_confirmados.append(agenda)
+    
+    return nao_confirmados
+
+  def agenda_listarhoje():
+    r = []
+    hoje = datetime.today()
+    for horario in View.agenda_listar():
+      if horario.get_confirmado() == False and horario.get_data().date() == hoje.date() and horario.get_id_cliente() == 0 and horario.get_id_servico() == 0:
+        r.append(horario)
+    return r   

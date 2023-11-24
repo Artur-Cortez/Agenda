@@ -8,6 +8,9 @@ from templates.servicoreajusteUI import ServicoReajusteUI
 from templates.abrircontaUI import AbrirContaUI
 from templates.editarperfilUI import EditarPerfilUI
 from templates.confirmarhorarioUI import ConfirmarHorarioUI
+from templates.agendarhorarioUI import AgendarHorarioUI
+from templates.agendahojeUI import AgendaHojeUI
+
 from views import View
 
 import streamlit as st
@@ -30,9 +33,11 @@ class IndexUI:
     if op == "Confirmar horário": ConfirmarHorarioUI.main()
 
   def menu_cliente():
-    op = st.sidebar.selectbox("Menu", ["Meus agendamentos", "Editar perfil"])
+    op = st.sidebar.selectbox("Menu", ["Agenda de hoje", "Meus agendamentos", "Editar perfil", "Agendar um horário"])
     if op == "Meus agendamentos" : MeusAgendamentosUI.main()
     if op == "Editar perfil": EditarPerfilUI.main()
+    if op == "Agenda de hoje": AgendaHojeUI.main()
+    if op == "Agendar um horário": AgendarHorarioUI.main()
 
   def btn_logout():
     if st.sidebar.button("Logout"):

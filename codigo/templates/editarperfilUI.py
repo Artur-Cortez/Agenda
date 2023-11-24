@@ -14,7 +14,7 @@ class EditarPerfilUI:
       if st.button("Atualizar"):
         id = st.session_state["cliente_id"]
         View.cliente_atualizar(id, nome, email, fone, senha)
-        st.session_state["cliente_nome"] = nome
+        st.session_state["cliente_nome"] = nome #Atualização "automática" do nome de usuario na barra lateral
         st.success("Dados atualizado com sucesso")
         sleep(0.5)
         st.rerun()
